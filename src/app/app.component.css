@@ -1,0 +1,7 @@
+.form-check{
+    margin-right: 40px; 
+    display: inline-block
+}
+label{
+    font-weight: bold;
+}
