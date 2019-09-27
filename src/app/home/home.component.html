@@ -28,8 +28,8 @@
                 <td>{{value.password}}</td>
                 <td>
                    
-                        <button type="button" class="btn btn-light">Edit</button>
-                        <button type="button" class="btn btn-danger" >Delete</button>
+                        <button type="button" class="btn btn-light">Edit</button>                        
+                        <button type="button" class="btn btn-danger" (click)="delete(value._id)">Delete</button>
                   
                     <!-- <a [routerLink]="['./edit, 'form2']">Form2</a> -->
                     

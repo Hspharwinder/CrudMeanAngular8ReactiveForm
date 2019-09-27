@@ -38,5 +38,15 @@ export class HomeComponent implements OnInit {
     }    
     return hobbieArray;
   }
+  
+  delete(id:string){
+    this.service.delete(id).subscribe((res : any[])=>{
+      this.getData = [...res];
+      console.log(this.getData);
+      alert("Data Deleted Sussfully");
+    })
+  }
+
+ 
 
 }

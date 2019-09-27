@@ -13,6 +13,11 @@ export class CrudService {
     let url = BaseURL + Api.GET;
     return this.http.get(`${url}`);
   } 
+  
+  delete(id:string){
+    let url = BaseURL + Api.DELETE + id;
+    return this.http.delete(`${url}`);
+  }
 }
 
 
