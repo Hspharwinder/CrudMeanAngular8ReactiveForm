@@ -9,7 +9,6 @@ import { BaseURL, Api } from '../path.config/Api';
 export class CrudService {    
 
   constructor(private http:HttpClient) { }
-
   get(){
     let url = BaseURL + Api.GET;
     return this.http.get(`${url}`);

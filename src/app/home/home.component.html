@@ -26,10 +26,13 @@
                 <td>{{value.gender}}</td>   
                 <td><div>{{getHobbies(value.hobbies)}}</div></td>  
                 <td>{{value.password}}</td>
-                <td>                   
-                    <button type="button" class="btn btn-light">Edit</button>                   
+                <td>
+                   
+                        <button type="button" class="btn btn-light">Edit</button>
+                        <button type="button" class="btn btn-danger" >Delete</button>
+                  
                     <!-- <a [routerLink]="['./edit, 'form2']">Form2</a> -->
-                    <button type="button" class="btn btn-danger">Delete</button>
+                    
                 </td>            
             </tr>           
         </tbody>
@@ -43,8 +46,10 @@
                 <td></td> 
                 <td></td>
                 <td></td>
-                <td>                 
-                    <button type="button" class="btn btn-primary">Add New</button>                  
+                <td>
+                   
+                        <button type="button" class="btn btn-primary">Add New</button>
+                  
                 </td>
                
             </tr>
