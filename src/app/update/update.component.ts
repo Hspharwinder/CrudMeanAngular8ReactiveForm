@@ -201,7 +201,7 @@ export class UpdateComponent implements OnInit {
 
     // adding checkbox values in form Object
     // if selectedGames Empty enter empty array otherwise push error throw because there is no array name of game
-    let games = this.selectedGames ||  []; 
+    let games = this.selectedGames ||  [];  
     let otherGames = this.formValue.value.otherGames;
     if(this.otherTextBox && otherGames){
       games.push(...otherGames.split(',')); 

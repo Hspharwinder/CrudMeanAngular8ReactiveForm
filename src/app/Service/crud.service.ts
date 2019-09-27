@@ -9,7 +9,11 @@ import { BaseURL, Api } from '../path.config/Api';
 export class CrudService {    
 
   constructor(private http:HttpClient) { }
-  
+  post(data: any){
+    let url = BaseURL + Api.POST;
+    return this.http.post(`${url}`, data);
+  }
+
   get(){
     let url = BaseURL + Api.GET;
     return this.http.get(`${url}`);
@@ -19,8 +23,15 @@ export class CrudService {
     let url = BaseURL + Api.GET + '/' + id;
     return this.http.get(`${url}`);
   }
+
+  delete(id:string){
+    let url = BaseURL + Api.DELETE + id;
+    return this.http.delete(`${url}`);
+  }
   put(data: any){
     let url = BaseURL + Api.PUT;
+    alert(url);
+    console.log("------------", data);
     return this.http.put(`${url}`, data);
   }
 }
