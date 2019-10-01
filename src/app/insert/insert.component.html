@@ -4,39 +4,79 @@
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="inputName4">Name</label>
-          <input type="text" formControlName="name" class="form-control" id="inputName4" placeholder="Name">
+
+          <input type="text" formControlName="name" class="form-control"
+          id="inputName4" placeholder="Name"
+          [class.is-invalid]="formValue.get('name').invalid && formValue.get('name').touched">
+
+           <small [class.d-none]="formValue.get('name').untouched || formValue.get('name').valid"
+           class="text-danger">
+             Name is required.
+           </small>
+
         </div>      
         <div class="form-group col-md-6">
           <label for="inputDept">Dept</label>
-          <select id="inputDept" formControlName="dept" (change)="deptChange($event)" class="form-control">
+
+          <select id="inputDept" formControlName="dept" (change)="deptChange($event)"
+          class="form-control"  [class.is-invalid]="dept.touched && dept.invalid">
               <option *ngFor="let d of Dept" [value]="d.name">{{d.name}}</option>
-            <!-- <option selected>Choose...</option>
-            <option>Dot Net</option>
-            <option>PHP</option>
-            <option>Node</option>
-            <option>Angular</option>
-            <option>Testing</option> -->
           </select>
+
+          <small class="text-danger" 
+          [class.d-none]="dept.untouched || dept.valid">
+            Department is required.
+          </small>
+
         </div>
         <div class="form-group col-md-6">
           <label for="inputDesignation">Designation</label>
-          <select id="inputDesignation" formControlName="designation" class="form-control">
+          
+          <select id="inputDesignation" formControlName="designation" 
+          class="form-control"
+          [class.invalid]="desi.touched">
             <option *ngFor="let d of designation" [value]="d">{{d}}</option>
-            <!-- <option selected>Director</option>
-            <option>Manager</option>
-            <option>Team Leader</option>
-            <option>Sr.Team Memeber</option>
-            <option>Team Memeber</option>
-            <option>Jr.Team Memeber</option> -->
           </select>
+
+          <div *ngIf="desi.touched && dept.untouched">
+            <small class="text-danger">
+              Select Department first.
+            </small>
+          </div>       
+
         </div>
         <div class="form-group col-md-6">
           <label for="inputEmail4">Email</label>
-          <input type="email" class="form-control" formControlName="email" id="inputEmail4" placeholder="Email">
+
+          <input type="email" class="form-control" formControlName="email" id="inputEmail4"
+          [class.is-invalid]="formValue.get('email').invalid && formValue.get('email').touched"
+           placeholder="Email">
+
+          <div *ngIf="formValue.get('email').invalid && formValue.get('email').touched">
+            <small *ngIf="formValue.get('email').errors?.required" class="text-danger">
+              Email required.
+            </small>
+            <small *ngIf="formValue.get('email').errors?.email" class="text-danger">
+              Email invalid.
+            </small>
+          </div>
+
         </div>
         <div class="form-group col-md-6">
           <label for="inputPassword4">Password</label>
-          <input type="password" class="form-control" formControlName="password" id="inputPassword4" placeholder="Password">
+
+          <input type="password" class="form-control" formControlName="password" id="inputPassword4" 
+          placeholder="Password" [class.is-invalid]="pwd.invalid && pwd.touched">
+
+          <div *ngIf="pwd.valid || pwd.touched">
+            <small class="text-danger" *ngIf="pwd.errors?.required">
+              Password required.
+            </small>
+            <small class="text-danger" *ngIf="pwd.errors?.minlength">
+              Password must be 3 characters
+            </small>
+          </div>
+
         </div>         
         
         <div class="form-group col-md-6">
@@ -50,6 +90,9 @@
               (onSelectAll)="onSelectAll($event)"
             >
             </ng-multiselect-dropdown-angular7>
+            <small *ngIf="formValue.get('hobbies').touched && formValue.get('hobbies').invalid" class="text-danger">
+              Please Select hobbie
+            </small>
           </div>
         <div class="form-row col-md-6">
           <div class="col-md-2">
@@ -59,7 +102,9 @@
           </div>
             <div class="form-group form-check" id="radio">
               <div class="col-md-2 form-check">
-                <input class="form-check-input"  formControlName="gender" value="male" name="gender" type="radio" id="gridCheck1">
+
+                <input class="form-check-input"  formControlName="gender" value="male" 
+                name="gender" type="radio" id="gridCheck1">
                 <!-- <label class="form-check-label" for="gridCheck1"> -->
                   Male
                 <!-- </label> -->
@@ -70,6 +115,9 @@
                   Female
                 <!-- </label> -->
               </div>
+              <small class="text-danger" *ngIf="formValue.get('gender').invalid && formValue.get('gender').touched">
+                Please Select Gender.
+              </small>
             </div> 
         </div>
         <div class="form-group col-md-6" id="games">
@@ -82,32 +130,42 @@
               <input class="form-check-input"  type="checkbox"     
                 [formControl]="control"        
                 [value]="gamesCheckBoxList[i].item_text"  id="id{{i}}" 
-                (change)="onCheckChange($event)">
+                (change)="onCheckChange($event)"
+                >
               <!-- <label class="form-check-label" [for]="i.item_text"> -->
                 {{gamesCheckBoxList[i].item_text}}   
               <!-- </label> -->
-            </div>
+            </div> 
             <div class="form-check">
-                <input class="form-check-input"  type="checkbox" id="Other" (change)="otherChange($event)">
-                <!-- <label class="form-check-label" for="Other"> -->
-                  Other
-                <!-- </label> -->
-              </div>
+              <input class="form-check-input"  type="checkbox" id="Other" (change)="otherChange($event)">
+              <!-- <label class="form-check-label" for="Other"> -->
+                Other
+              <!-- </label> -->
+            </div>
+            <small *ngIf="validError" class="text-danger">
+                Please select atleast 1 game.
+            </small>
+            <small *ngIf="games.touched && games.invalid" class="text-danger">
+                Please select atleast 1 game.
+            </small>
         </div>     
       </div>     
       <div class="form-group col-md-2 float-right"  *ngIf="otherTextBox">
-        <input type="text" class="form-control" formControlName="otherGames" [(ngModel)]="otherGames" id="inputOther">
+        <input type="text" class="form-control" formControlName="otherGames"  
+        name="otherGames" id="inputOther" (blur)="clickTextBocGames($event)"
+        >
       </div>      
       <div class="form-group">
         <label for="exampleFormControlFile1">Example file input</label>
-        <input type="file" class="form-control-file" id="exampleFormControlFile1">
+        <input type="file" class="form-control-file" formControlName="fileupload" 
+        id="exampleFormControlFile1" name="fileupload" (change)="upload($event.target.files)">
       </div>
 
       <a routerLink="/home" routerLinkActive="active">
         <button type="button" class="btn btn-light float-right">Cancel</button>
       </a>
       <!-- <button type="cancel" class="btn btn-light ">Cancel</button> -->
-      <button type="submit" class="btn btn-primary float-right">Save</button>
+      <button type="submit"  class="btn btn-primary float-right">Save</button>
     </form>
   </div>
   
