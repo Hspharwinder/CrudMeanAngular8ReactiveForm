@@ -4,4 +4,5 @@ export const Api = {
     GET:'/get',
     PUT:'/put',
     DELETE:'/delete/',
+    FilePost:'/filePost',
 }

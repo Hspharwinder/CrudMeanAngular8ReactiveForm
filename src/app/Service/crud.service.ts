@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BaseURL, Api } from '../path.config/Api';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -9,29 +10,33 @@ import { BaseURL, Api } from '../path.config/Api';
 export class CrudService {    
 
   constructor(private http:HttpClient) { }
-  post(data: any){
+
+  fileUpload(data:any) : Observable<any>{
+    let url = BaseURL + Api.FilePost;
+    return this.http.post(`${url}`, data);
+  }
+
+  post(data: any) : Observable<any>{
     let url = BaseURL + Api.POST;
     return this.http.post(`${url}`, data);
   }
 
-  get(){
+  get() : Observable<any>{
     let url = BaseURL + Api.GET;
     return this.http.get(`${url}`);
   }
 
-  getById(id:string){
+  getById(id:string) : Observable<any>{
     let url = BaseURL + Api.GET + '/' + id;
     return this.http.get(`${url}`);
   }
 
-  delete(id:string){
+  delete(id:string) : Observable<any>{
     let url = BaseURL + Api.DELETE + id;
     return this.http.delete(`${url}`);
   }
-  put(data: any){
+  put(data: any) : Observable<any>{
     let url = BaseURL + Api.PUT;
-    alert(url);
-    console.log("------------", data);
     return this.http.put(`${url}`, data);
   }
 }

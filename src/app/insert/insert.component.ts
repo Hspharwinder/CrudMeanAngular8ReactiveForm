@@ -10,7 +10,8 @@ import {Router} from '@angular/router';
 })
 export class InsertComponent implements OnInit {
 
-  otherTextBox = false;
+  otherTextBox = false;  
+  filePost = new FormData();
   formValue:FormGroup;
   selectedGames:any=[];
   hobbiesList: { item_id: number; item_text: string; }[];
@@ -19,12 +20,10 @@ export class InsertComponent implements OnInit {
   Dept: { id: number; name: string; desi: string[]; }[];
   designation: any;
   validError: boolean;
+  uploadForm: FormGroup;
+ 
 
-  constructor(
-    private formBuilder:FormBuilder,
-    private service:CrudService,
-    private router:Router,
-    )
+  constructor(private formBuilder:FormBuilder, private service:CrudService, private router:Router)
   {
     this.getHobbieList();
     this.getGamesCheckBox();
@@ -33,14 +32,33 @@ export class InsertComponent implements OnInit {
     this.getDept();
   } 
 
+  uploadFile(file:File[]){
+    if(file.length>0){
+      this.filePost.append('File', file[0]);   ;    
+    }     
+  }
+
   onSubmit(form :any){
     if(this.formValue.invalid){
-        this.valildateAll(form);
+      this.valildateAll(form);
     } 
-    else{
-      this.postData();
+    else{           
+      this.fileUpload()
     }      
   }
+
+  fileUpload(){
+    this.service.fileUpload(this.filePost).subscribe((res)=>{
+      console.log(res);
+      if(res.fileUploadSucess)
+        this.postData();
+      else
+        console.log("File uploading Fail!!");
+    },err=>{
+      console.log("file upload error", err);
+    }) 
+  }
+
 
   /////*****  Validation code start *******/////  
 
@@ -54,7 +72,8 @@ export class InsertComponent implements OnInit {
       gender : new FormControl('', Validators.required),
       hobbies : new FormControl('', Validators.required),
       games : this.addListControl(),
-      otherGames : new FormControl('')
+      otherGames : new FormControl(''),
+      fileUpload:new FormControl(''),      
     });
   }
 
@@ -111,29 +130,6 @@ export class InsertComponent implements OnInit {
 
   /////*****  End Validation code start *******///// 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
   ngOnInit(){
   }
 
@@ -155,8 +151,7 @@ export class InsertComponent implements OnInit {
     },err=>{
       console.log("error during response ",err);
     })  
-  }
-  
+  }  
 
   // initialize all value checked = false of gamesCheckBoxList
   addListControl(){
