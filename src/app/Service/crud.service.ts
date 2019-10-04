@@ -16,7 +16,8 @@ export class CrudService {
     return this.http.post(`${url}`, data);
   }
 
-  post(data: any) : Observable<any>{
+  post(data: any) : Observable<any>{    
+    console.log("service ===  ", data);
     let url = BaseURL + Api.POST;
     return this.http.post(`${url}`, data);
   }

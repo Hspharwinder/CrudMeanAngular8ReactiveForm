@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, FormArray, ControlContainer, Validators } from '@angular/forms';
 import { CrudService } from '../Service/crud.service';
 import {Router} from '@angular/router';
+import { Api } from '../path.config/Api';
 
 @Component({
   selector: 'app-insert',
@@ -11,7 +12,7 @@ import {Router} from '@angular/router';
 export class InsertComponent implements OnInit {
 
   otherTextBox = false;  
-  filePost = new FormData();
+  filePost: FormData; 
   formValue:FormGroup;
   selectedGames:any=[];
   hobbiesList: { item_id: number; item_text: string; }[];
@@ -21,6 +22,8 @@ export class InsertComponent implements OnInit {
   designation: any;
   validError: boolean;
   uploadForm: FormGroup;
+  fileImageUrl: string;
+  fullPath :string;
  
 
   constructor(private formBuilder:FormBuilder, private service:CrudService, private router:Router)
@@ -33,8 +36,10 @@ export class InsertComponent implements OnInit {
   } 
 
   uploadFile(file:File[]){
+    this.filePost = new FormData();
     if(file.length>0){
-      this.filePost.append('File', file[0]);   ;    
+      this.filePost.append('File', file[0]);      
+      this.fileUpload();   
     }     
   }
 
@@ -42,16 +47,19 @@ export class InsertComponent implements OnInit {
     if(this.formValue.invalid){
       this.valildateAll(form);
     } 
-    else{           
-      this.fileUpload()
+    else{                  
+      this.postData();
     }      
   }
 
   fileUpload(){
     this.service.fileUpload(this.filePost).subscribe((res)=>{
       console.log(res);
-      if(res.fileUploadSucess)
-        this.postData();
+      if(res.fileUploadSucess){   
+        debugger;
+        this.fileImageUrl = res.filePath; 
+        this.fullPath = Api.BASEURL + this.fileImageUrl;
+      }
       else
         console.log("File uploading Fail!!");
     },err=>{
@@ -145,7 +153,14 @@ export class InsertComponent implements OnInit {
       delete this.formValue.value.games; // if games property empty delete it
       console.log({...this.formValue.value,games});
     }
-    let post = {...this.formValue.value,games};
+
+    const fileUpload = this.fileImageUrl;
+    debugger;    
+    let post = {...this.formValue.value, games};
+    
+    console.log({...post,fileUpload});
+    post = {...post,fileUpload}
+   
     this.service.post(post).subscribe((res)=>{
       this.router.navigateByUrl('/home');
     },err=>{

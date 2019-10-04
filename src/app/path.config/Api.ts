@@ -5,4 +5,5 @@ export const Api = {
     PUT:'/put',
     DELETE:'/delete/',
     FilePost:'/filePost',
+    BASEURL: 'http://localhost:3000/',
 }

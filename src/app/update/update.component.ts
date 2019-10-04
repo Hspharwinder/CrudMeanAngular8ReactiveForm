@@ -164,7 +164,11 @@ export class UpdateComponent implements OnInit {
     this.formValue.controls.games = this.addListControl(res.games);
 
     if(res.otherGames) this.otherTextBox = true; 
-    this.formValue.get('otherGames').setValue(res.otherGames); 
+    this.formValue.get('otherGames').setValue(res.otherGames);
+    
+    // if(res.filePath){
+
+    // }
     
   }
 
