@@ -24,4 +24,6 @@ export class Data {
       { item_id: 4, item_text: 'Romance' },
       { item_id: 5, item_text: 'Dance' }
     ];  
+
+   role = ['Admin', 'User' ];
 }

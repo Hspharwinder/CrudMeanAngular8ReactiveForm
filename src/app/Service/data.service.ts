@@ -17,5 +17,9 @@ export class DataService {
   gethobbiesList(){
     return this.data.hobbiesList;
   }
+
+  getRole():any {
+    return this.data.role;
+  }
   
 }

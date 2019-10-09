@@ -3,6 +3,9 @@ import { CrudService } from '../Service/crud.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormArray, FormGroup } from '@angular/forms';
 import { DataService } from '../Service/data.service';
+import { ToastrService } from 'ngx-toastr';
+import { AuthenticationService } from '../Service/authentication.service';
+import { Api } from '../path.config/Api';
 
 @Component({
   selector: 'app-update',
@@ -23,6 +26,9 @@ export class UpdateComponent implements OnInit {
   designation: string[];
   otherTextBox: boolean = false;
   selectedhobbiesList: any[];
+  fileImageUrl: string;
+  filePost: any;
+  fullPath: string;
 
   constructor(
     private service:CrudService,
@@ -30,6 +36,8 @@ export class UpdateComponent implements OnInit {
     private formBuilder:FormBuilder,
     private dataService:DataService,
     private router:Router,
+    private toastr:ToastrService,
+    private auth:AuthenticationService,
     ) {     
       
     }
@@ -49,8 +57,13 @@ export class UpdateComponent implements OnInit {
 
        /***  Code for binding reactive form in angular v6 and above   ****/
        this.formBinding(res);    
-    })   
-    
+    },(error)=>{
+      if(error.status == 401){ 
+        this.auth.tokenExpire();
+      }else{        
+        this.toastr.error(error);
+      }
+    })    
   }
 
   formatingHobbies(hobbies:any){
@@ -95,6 +108,7 @@ export class UpdateComponent implements OnInit {
       hobbies : new FormControl(),
       games : new FormControl([]),
       otherGames : new FormControl(),
+      fileUpload: new FormControl(''), 
     });
   }
 
@@ -217,12 +231,25 @@ export class UpdateComponent implements OnInit {
     }
     let id = this.gettParamId(); // getting id of record
     let put = {id, ...this.formValue.value, games};
+
+    const fileUpload = this.fileImageUrl;      
+    if(fileUpload) {      
+      console.log({...put,fileUpload});
+      put = {...put,fileUpload};
+    }
     console.log("-------", put);
     this.service.put(put).subscribe((res)=>{
       this.router.navigateByUrl('/home');
-    },err=>{
-      console.log("error during response ",err);
-    })    
+    },(error) => {
+        if (error.status == 401) {
+          this.auth.tokenExpire();
+        } else if (error.status == 0) {
+          this.toastr.error('Error Api connection refused !!');
+        }
+        else {
+          this.toastr.error('Invalid User Password !!');
+        }   
+    });  
   }
 
   onItemSelect(hobbies:any){
@@ -235,15 +262,32 @@ export class UpdateComponent implements OnInit {
     this.otherTextBox = !this.otherTextBox;
     console.log(e);    
   }
-  // formBindingOldVersion(res:any){
-  //   this.formValue.controls.name = res.name;
-  //   this.formValue.controls.dept = res.dept;
-  //   this.formValue.controls.designation = res.designation;
-  //   this.formValue.controls.email = res.email;
-  //   this.formValue.controls.gender = res.gender;
-  //   this.formValue.controls.hobbies = {...res.hobbies};      
-  //   this.formValue.controls.password = res.password;
-  // }
 
+  uploadFile(file: File[]) {
+    this.filePost = new FormData();
+    if (file.length > 0) {
+      this.filePost.append('File', file[0]);
+      this.fileUpload();
+    }
+  }
+
+  fileUpload() {
+    this.service.fileUpload(this.filePost).subscribe((res) => {
+      console.log(res);
+      if (res.fileUploadSucess) {
+        this.fileImageUrl = res.filePath;
+        this.fullPath = Api.BASEURL + this.fileImageUrl;
+      }
+      else
+        console.log("File uploading Fail!!");
+    }, (error) => {
+      if (error.status == 401) {
+        this.auth.tokenExpire();
+      } else {
+        this.toastr.error(error);
+      }
+    })
+  }
+  
 
 }

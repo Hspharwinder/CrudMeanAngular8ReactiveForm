@@ -85,11 +85,14 @@
             <input type="text" class="form-control" formControlName="otherGames" 
             id="inputOther">
           </span>     
-          <!-- <div class="form-group">
+          <div class="form-group">       
             <label for="exampleFormControlFile1">Example file input</label>
-            <input type="file" class="form-control-file" id="exampleFormControlFile1">
-          </div> -->
-          <!-- <div>             -->
+            <div class="form-group">   
+                <img *ngIf="fileImageUrl" [src]="fullPath"  height="100px">
+            </div>
+            <input type="file" class="form-control-file" formControlName="fileUpload" name="fileImageUrl"
+            id="exampleFormControlFile1" (change)="uploadFile($event.target.files)" multiple>
+          </div>
             <a routerLink="/home" routerLinkActive="active">
               <button type="button" class="btn btn-light float-right">Cancel</button>
             </a>

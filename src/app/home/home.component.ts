@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CrudService } from '../Service/crud.service';
+import { ToastrService } from 'ngx-toastr';
+import { AuthenticationService } from '../Service/authentication.service';
+import { Api } from '../path.config/Api';
 
 @Component({
   selector: 'app-home',
@@ -8,15 +11,26 @@ import { CrudService } from '../Service/crud.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private service:CrudService) { }
+  constructor(private service:CrudService, private toastr:ToastrService,
+    private auth:AuthenticationService) { }
 
   getData:any;
+  ApiUrl:string = Api.BASEURL;
 
   ngOnInit() {    
     this.service.get().subscribe((res : any[])=>{
       this.getData = [...res];
       console.log(this.getData);
-    })
+    },(error)=>{
+        if (error.status == 401) {
+          this.auth.tokenExpire();
+        } else if (error.status == 0) {
+          this.toastr.error('Error Api connection refused !!');
+        }
+        else {
+          this.toastr.error('Invalid User Password !!');
+        }   
+    });
   }
 
   getGames(gamesObj:any){   
@@ -42,9 +56,20 @@ export class HomeComponent implements OnInit {
   delete(id:string){
     this.service.delete(id).subscribe((res:any)=>{
       this.getData = [...res];
-    },err=>{
-      console.log(err);
-    })
+  }, (error) => {
+        if (error.status == 401) {
+          this.auth.tokenExpire();
+        } else if (error.status == 0) {
+          this.toastr.error('Error Api connection refused !!');
+        }
+        else {
+          this.toastr.error('Invalid User Password !!');
+        }   
+    });
+  }
+  
+  logout(){
+    this.auth.logout();    
   }
 
 }

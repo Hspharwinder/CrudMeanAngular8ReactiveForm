@@ -3,6 +3,8 @@ import { FormGroup, FormBuilder, FormControl, FormArray, ControlContainer, Valid
 import { CrudService } from '../Service/crud.service';
 import {Router} from '@angular/router';
 import { Api } from '../path.config/Api';
+import { ToastrService } from 'ngx-toastr';
+import { AuthenticationService } from '../Service/authentication.service';
 
 @Component({
   selector: 'app-insert',
@@ -26,7 +28,11 @@ export class InsertComponent implements OnInit {
   fullPath :string;
  
 
-  constructor(private formBuilder:FormBuilder, private service:CrudService, private router:Router)
+  constructor(private formBuilder:FormBuilder, 
+    private service:CrudService, 
+    private router:Router,
+    private toastr: ToastrService,
+    private auth: AuthenticationService,)
   {
     this.getHobbieList();
     this.getGamesCheckBox();
@@ -56,15 +62,21 @@ export class InsertComponent implements OnInit {
     this.service.fileUpload(this.filePost).subscribe((res)=>{
       console.log(res);
       if(res.fileUploadSucess){   
-        debugger;
         this.fileImageUrl = res.filePath; 
         this.fullPath = Api.BASEURL + this.fileImageUrl;
       }
       else
         console.log("File uploading Fail!!");
-    },err=>{
-      console.log("file upload error", err);
-    }) 
+    }, (error) => {
+      if (error.status == 401) {
+        this.auth.tokenExpire();
+      }else if (error.status == 0) {
+          this.toastr.error('Error Api connection refused !!');
+        }
+        else {
+          this.toastr.error('Invalid User Password !!');
+        }   
+    })   
   }
 
 
@@ -152,20 +164,26 @@ export class InsertComponent implements OnInit {
     else{
       delete this.formValue.value.games; // if games property empty delete it
       console.log({...this.formValue.value,games});
-    }
+    };   
 
-    const fileUpload = this.fileImageUrl;
-    debugger;    
     let post = {...this.formValue.value, games};
-    
+
+    const fileUpload = this.fileImageUrl;    
     console.log({...post,fileUpload});
     post = {...post,fileUpload}
    
     this.service.post(post).subscribe((res)=>{
       this.router.navigateByUrl('/home');
-    },err=>{
-      console.log("error during response ",err);
-    })  
+    }, (error) => {
+        if (error.status == 401) {
+          this.auth.tokenExpire();
+        } else if (error.status == 0) {
+          this.toastr.error('Error Api connection refused !!');
+        }
+        else {
+          this.toastr.error('Invalid User Password !!');
+        }   
+    });  
   }  
 
   // initialize all value checked = false of gamesCheckBoxList
